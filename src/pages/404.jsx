@@ -6,7 +6,7 @@ const ErrorPage = () => {
     <section>
 
     <div className="h-screen w-screen">
-        <img src={Img} className="w-full h-full" alt="Página não encontrada" />
+        <img src={Img} className="w-full h-full object-cover" alt="Página não encontrada" />
         <Button nome="Voltar a página principal" />
     </div>
   
