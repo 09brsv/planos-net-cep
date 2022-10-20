@@ -2,40 +2,35 @@ import { useState } from 'preact/hooks';
 import { useNavigate } from "react-router-dom";
 
 const Form = () => {
+    
     const navigate = useNavigate()
     const [events, setEvents] = useState()
-    const [cep, setCep] = useState({})
+    const [errorMsg, setErrorMsg] = useState('')
 
     const handleSubmit = async (e) => {
-
+        
         e.preventDefault();
-
-        if (events.length < 8){
-            
-             return window.alert('Digite o cep corretamente')
-        }
         
         try {
 
-            const data = await fetch(`https://viacep.com.br/ws/${events}/json/`)
+            const dataCep = events.replace('.','')
+            const data = await fetch(`https://viacep.com.br/ws/${dataCep}/json/`)
             .then(response => response.json())
 
             if (data.erro) {
                 
-                navigate('/404')
-                return
+                return setErrorMsg("O número do cep não foi encontrado");
+                 
             }
-            
-            setCep(data)
-            
-        
+      
             navigate(`/planos?q=${data.cep}`)
       
             
         } catch (error) {
 
-            window.alert('CEP incorreto ', error)
-            setEvents('')
+            setErrorMsg("Digite o cep corretamente");
+            setEvents('');
+            return
         }
     }
 
@@ -48,7 +43,10 @@ const Form = () => {
           className="rounded-md text-center max-mob:text-sm"
           name="cep"
           placeholder="Digite o seu CEP"
-          onChange={(e) => setEvents(e.target.value)}
+          onChange={(e) => {
+            setEvents(e.target.value)
+            setErrorMsg('')
+          }}
           value={events}
           required
         />
@@ -59,6 +57,7 @@ const Form = () => {
           Enviar
         </button>
       </form>
+      <p className="text-red-600 text-sm">{errorMsg}</p>
     </section>
   );
 }
